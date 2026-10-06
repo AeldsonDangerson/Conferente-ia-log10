@@ -1,1 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conferente IA - LOG10</title>
 
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #123b63;
+    }
+
+    video {
+      width: 100%;
+      max-width: 500px;
+      border-radius: 12px;
+      margin-top: 20px;
+      background: #000;
+    }
+
+    button {
+      background: #123b63;
+      color: white;
+      border: none;
+      padding: 16px 25px;
+      font-size: 18px;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+
+    #status {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Conferente IA - LOG10</h1>
+
+  <p>Teste de câmera para conferência de materiais</p>
+
+  <button onclick="abrirCamera()">📷 Abrir câmera</button>
+
+  <p id="status">Câmera aguardando...</p>
+
+  <video id="camera" autoplay playsinline></video>
+
+  <script>
+    async function abrirCamera() {
+
+      const video = document.getElementById("camera");
+      const status = document.getElementById("status");
+
+      try {
+
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: "environment" }
+          },
+          audio: false
+        });
+
+        video.srcObject = stream;
+
+        status.innerText = "✅ Câmera funcionando";
+
+      } catch (erro) {
+
+        status.innerText =
+          "❌ Não foi possível acessar a câmera: " + erro.message;
+
+      }
+    }
+  </script>
+
+</body>
+</html>
