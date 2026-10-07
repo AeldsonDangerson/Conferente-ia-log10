@@ -1,86 +1,22 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Conferente IA - LOG10</title>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      text-align: center;
-      padding: 20px;
-    }
-
-    h1 {
-      color: #123b63;
-    }
-
-    video {
-      width: 100%;
-      max-width: 500px;
-      border-radius: 12px;
-      margin-top: 20px;
-      background: #000;
-    }
-
-    button {
-      background: #123b63;
-      color: white;
-      border: none;
-      padding: 16px 25px;
-      font-size: 18px;
-      border-radius: 10px;
-      margin-top: 20px;
-    }
-
-    #status {
-      margin-top: 15px;
-      font-weight: bold;
-    }
-  </style>
-</head>
-
-<body>
-
-  <h1>Conferente IA - LOG10</h1>
-
-  <p>Teste de câmera para conferência de materiais</p>
-
-  <button onclick="abrirCamera()">📷 Abrir câmera</button>
-
-  <p id="status">Câmera aguardando...</p>
-
-  <video id="camera" autoplay playsinline></video>
-
-  <script>
-    async function abrirCamera() {
-
-      const video = document.getElementById("camera");
-      const status = document.getElementById("status");
-
-      try {
-
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: {
-            facingMode: { ideal: "environment" }
-          },
-          audio: false
-        });
-
-        video.srcObject = stream;
-
-        status.innerText = "✅ Câmera funcionando";
-
-      } catch (erro) {
-
-        status.innerText =
-          "❌ Não foi possível acessar a câmera: " + erro.message;
-
-      }
-    }
-  </script>
-
-</body>
-</html>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Conferente IA - LOG10</title><style>
+*{box-sizing:border-box}body{font-family:Arial,sans-serif;background:#f4f6f8;margin:0;color:#18324a}.app{max-width:620px;margin:auto;padding:18px}h1{color:#123b63;margin:8px 0 4px}.sub{margin:0 0 14px;color:#52677a}.card{background:#fff;border-radius:14px;padding:16px;margin:14px 0;box-shadow:0 2px 10px #0001}video,canvas{width:100%;border-radius:12px;background:#111;max-height:430px;object-fit:cover}.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}button{background:#123b63;color:#fff;border:0;padding:14px 10px;font-size:16px;font-weight:700;border-radius:10px}button.secondary{background:#e7edf3;color:#123b63}button:disabled{opacity:.45}.status{padding:11px;border-radius:9px;background:#eef3f7;font-weight:700;margin-top:10px}.result{display:none;text-align:left}.row{padding:9px 0;border-bottom:1px solid #e7edf3}.label{font-size:12px;color:#6b7c8b;text-transform:uppercase}.value{font-size:17px;font-weight:700;margin-top:3px}.ok{color:#147a3e}.warn{color:#a55a00}.hint{font-size:13px;color:#667;margin-top:10px}.badge{display:inline-block;background:#e8f0f8;color:#123b63;padding:5px 9px;border-radius:20px;font-size:12px;font-weight:bold}
+</style></head><body><div class="app">
+<span class="badge">PROTÓTIPO</span><h1>Conferente IA - LOG10</h1><p class="sub">Conferência inteligente de materiais</p>
+<div class="card"><video id="camera" autoplay playsinline></video><canvas id="foto" hidden></canvas>
+<div class="actions"><button onclick="abrirCamera()">📷 Abrir câmera</button><button id="capturar" onclick="capturar()" disabled>🔎 Capturar / analisar</button></div>
+<div id="status" class="status">Câmera aguardando...</div><p class="hint">Aponte para a etiqueta deixando referência, lote e código bem visíveis.</p></div>
+<div id="resultado" class="card result"><h2>Resultado da conferência</h2>
+<div class="row"><div class="label">Referência</div><div id="ref" class="value">Aguardando leitura automática</div></div>
+<div class="row"><div class="label">Lote</div><div id="lote" class="value">Aguardando leitura automática</div></div>
+<div class="row"><div class="label">Código</div><div id="codigo" class="value">Aguardando leitura automática</div></div>
+<div class="row"><div class="label">Situação</div><div id="situacao" class="value warn">Imagem capturada — etapa de IA/OCR ainda em desenvolvimento</div></div>
+<div class="actions"><button class="secondary" onclick="nova()">↻ Nova conferência</button><button onclick="confirmar()">✓ Confirmar</button></div></div></div>
+<script>
+let stream=null;
+async function abrirCamera(){const v=document.getElementById('camera'),s=document.getElementById('status');try{if(stream)stream.getTracks().forEach(t=>t.stop());stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1080}},audio:false});v.srcObject=stream;await v.play();s.textContent='✅ Câmera funcionando — aponte para a etiqueta';document.getElementById('capturar').disabled=false}catch(e){s.textContent='❌ Não foi possível acessar a câmera: '+e.message}}
+function capturar(){const v=document.getElementById('camera'),c=document.getElementById('foto');if(!v.videoWidth){document.getElementById('status').textContent='⚠️ Aguarde a câmera carregar.';return}c.width=v.videoWidth;c.height=v.videoHeight;c.getContext('2d').drawImage(v,0,0,c.width,c.height);c.hidden=false;v.style.display='none';document.getElementById('resultado').style.display='block';document.getElementById('status').textContent='📸 Imagem capturada com sucesso';document.getElementById('resultado').scrollIntoView({behavior:'smooth'})}
+function nova(){document.getElementById('foto').hidden=true;document.getElementById('camera').style.display='block';document.getElementById('resultado').style.display='none';const e=document.getElementById('situacao');e.textContent='Imagem capturada — etapa de IA/OCR ainda em desenvolvimento';e.className='value warn';document.getElementById('status').textContent='✅ Câmera pronta para nova conferência'}
+function confirmar(){const e=document.getElementById('situacao');e.textContent='✓ Captura confirmada';e.className='value ok'}
+</script></body></html>
